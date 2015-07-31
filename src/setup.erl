@@ -69,14 +69,23 @@ enable_cluster(Options) ->
             enable_cluster_http(Options)
     end.
 
+get_remote_request_options(Options) ->
+    case couch_util:get_value(remote_current_user, Options, undefined) of
+        undefined ->
+            [];
+        _ ->
+            [
+                {basic_auth, {
+                    binary_to_list(couch_util:get_value(remote_current_user, Options)),
+                    binary_to_list(couch_util:get_value(remote_current_password, Options))
+                }}
+            ]
+    end.
+
 enable_cluster_http(Options) ->
     % POST to nodeB/_setup
-    RequestOptions = [
-        {basic_auth, {
-            binary_to_list(couch_util:get_value(remote_current_user, Options)),
-            binary_to_list(couch_util:get_value(remote_current_password, Options))
-        }}
-    ],
+
+    RequestOptions = get_remote_request_options(Options),
 
     Body = ?JSON_ENCODE({[
         {<<"action">>, <<"enable_cluster">>},
