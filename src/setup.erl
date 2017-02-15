@@ -15,7 +15,7 @@
 -export([enable_cluster/1, finish_cluster/0, add_node/1, receive_cookie/1]).
 -export([is_cluster_enabled/0, has_cluster_system_dbs/0]).
 
--include_lib("../couch/include/couch_db.hrl").
+-include_lib("couch/include/couch_db.hrl").
 
 
 require_admins(undefined, {undefined, undefined}) ->
