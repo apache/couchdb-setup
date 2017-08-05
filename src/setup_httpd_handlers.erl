@@ -12,7 +12,7 @@
 
 -module(setup_httpd_handlers).
 
--export([url_handler/1, db_handler/1, design_handler/1]).
+-export([url_handler/1, db_handler/1, design_handler/1, endpoints/1]).
 
 url_handler(<<"_cluster_setup">>) -> fun setup_httpd:handle_setup_req/1;
 url_handler(_) -> no_match.
@@ -20,3 +20,21 @@ url_handler(_) -> no_match.
 db_handler(_) -> no_match.
 
 design_handler(_) -> no_match.
+
+endpoints(url_handler) ->
+    [
+        <<"_cluster_setup">>
+    ];
+endpoints(db_handler) ->
+    [];
+endpoints(design_handler) ->
+    [].
+
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+
+setup_endpoints_test_() ->
+    Apps = [couch_epi, setup],
+    chttpd_httpd_handlers_test_util:endpoints_test(setup, ?MODULE, Apps).
+
+-endif.
